@@ -84,17 +84,6 @@ export class MailService {
                             display: block;
                           "
                         />
-
-                        <p
-                          style="
-                            margin: 0;
-                            font-size: 14px;
-                            letter-spacing: 3px;
-                            color: #013179;
-                          "
-                        >
-                          15 • 05 • 2027
-                        </p>
                       </td>
                     </tr>
 
