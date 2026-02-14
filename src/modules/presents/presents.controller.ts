@@ -68,4 +68,23 @@ export class PresentsController {
 
     return { received: true };
   }
+
+  // ---------------------------- API ASAAS ---------------------------- //
+
+  @Post(':id/checkout/v2')
+  public async checkoutV2(@Param('id') id: string) {
+    return await this.presentsService.createCheckoutV2(id);
+  }
+
+  @Post('webhook/v2')
+  async handleWebhookV2(@Req() req: express.Request) {
+    const body = req.body;
+
+    if (body.event === 'CHECKOUT_PAID') {
+      console.log('TESTE', body);
+    }
+
+    // Retorne uma resposta para dizer que o webhook foi recebido
+    return { received: true };
+  }
 }

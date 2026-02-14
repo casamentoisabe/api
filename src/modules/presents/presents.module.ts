@@ -4,12 +4,13 @@ import { PresentsController } from './presents.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Present, PresentSchema } from './schemas/presents.schema';
 import { StripeService } from 'src/common/services/stripe/stripe.service';
+import { AsaasService } from 'src/common/services/asaas/asaas.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Present.name, schema: PresentSchema }]),
   ],
-  providers: [PresentsService, StripeService],
+  providers: [PresentsService, StripeService, AsaasService],
   controllers: [PresentsController],
   exports: [PresentsService],
 })

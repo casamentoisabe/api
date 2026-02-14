@@ -9,12 +9,14 @@ import { Present, PresentDocument } from './schemas/presents.schema';
 import { Model } from 'mongoose';
 import { StripeService } from 'src/common/services/stripe/stripe.service';
 import { CreatePresentDto } from './dto/create-present.dto';
+import { AsaasService } from 'src/common/services/asaas/asaas.service';
 
 @Injectable()
 export class PresentsService {
   constructor(
     @InjectModel(Present.name) private presentModel: Model<PresentDocument>,
     private stripeService: StripeService,
+    private asaasService: AsaasService,
   ) {}
 
   public async create(
@@ -63,5 +65,17 @@ export class PresentsService {
     }
 
     return this.stripeService.createCheckoutSession(present);
+  }
+
+  // ---------------------------- API ASAAS ---------------------------- //
+
+  public async createCheckoutV2(presentId: string) {
+    const present = await this.presentModel.findById(presentId);
+
+    const payment = await this.asaasService.createPayment(present);
+
+    return {
+      invoiceUrl: payment.invoiceUrl,
+    };
   }
 }
