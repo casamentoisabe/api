@@ -8,7 +8,6 @@ import { Guest, GuestDocument } from './schemas/guests.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateGuessDto } from './dto/create-guest.dto';
-import { json } from 'express';
 import { MailService } from '../mail/mail.service';
 
 @Injectable()

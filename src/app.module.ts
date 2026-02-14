@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GuestsModule } from './modules/guests/guests.module';
 import { ConfigModule } from '@nestjs/config';
 import { MailModule } from './modules/mail/mail.module';
+import { MessagesModule } from './modules/messages/messages.module';
 import * as env from 'dotenv';
 
 env.config();
@@ -17,6 +18,7 @@ env.config();
     ConfigModule.forRoot({ isGlobal: true }),
     GuestsModule,
     MailModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
