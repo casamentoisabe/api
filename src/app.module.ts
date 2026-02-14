@@ -6,6 +6,8 @@ import { GuestsModule } from './modules/guests/guests.module';
 import { ConfigModule } from '@nestjs/config';
 import { MailModule } from './modules/mail/mail.module';
 import { MessagesModule } from './modules/messages/messages.module';
+import { StripeService } from './common/services/stripe/stripe.service';
+import { PresentsModule } from './modules/presents/presents.module';
 import * as env from 'dotenv';
 
 env.config();
@@ -19,8 +21,9 @@ env.config();
     GuestsModule,
     MailModule,
     MessagesModule,
+    PresentsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, StripeService],
 })
 export class AppModule {}

@@ -1,0 +1,71 @@
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Req,
+} from '@nestjs/common';
+import { PresentsService } from './presents.service';
+import { StripeService } from 'src/common/services/stripe/stripe.service';
+import Stripe from 'stripe';
+import { InjectModel } from '@nestjs/mongoose';
+import { Present, PresentDocument } from './schemas/presents.schema';
+import { Model } from 'mongoose';
+import express from 'express';
+import { CreatePresentDto } from './dto/create-present.dto';
+
+@Controller('presents')
+export class PresentsController {
+  constructor(
+    private readonly presentsService: PresentsService,
+    private stripeService: StripeService,
+    @InjectModel(Present.name) private presentModel: Model<PresentDocument>,
+  ) {}
+
+  @Post('register')
+  @HttpCode(HttpStatus.CREATED)
+  create(@Body() dto: CreatePresentDto) {
+    return this.presentModel.create(dto);
+  }
+
+  @Get('list')
+  @HttpCode(HttpStatus.OK)
+  list() {
+    return this.presentsService.findAll();
+  }
+
+  @Get('list/:id/present')
+  @HttpCode(HttpStatus.OK)
+  listOne(@Param('id') id: string) {
+    return this.presentsService.findOne(id);
+  }
+
+  @Post(':id/checkout')
+  public async checkout(@Param('id') id: string) {
+    const session = await this.presentsService.createCheckout(id);
+    return { url: session.url };
+  }
+
+  @Post('webhook')
+  async handleWebhook(
+    @Req() req: express.Request,
+    @Headers('stripe-signature') signature: string,
+  ) {
+    const event = this.stripeService.constructWebhookEvent(req.body, signature);
+
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object as Stripe.Checkout.Session;
+      const presentId = session.metadata?.presentId;
+
+      await this.presentModel.findByIdAndUpdate(presentId, {
+        purchased: true,
+      });
+    }
+
+    return { received: true };
+  }
+}
