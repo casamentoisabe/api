@@ -40,7 +40,7 @@ export class AsaasService {
         },
         items: [
           {
-            imageBase64: this.imageToBase64(present.photo),
+            imageBase64: await this.imageToBase64(present.photo),
             name: present.name,
             quantity: 1,
             value: present.price,
