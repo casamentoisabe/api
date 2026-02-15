@@ -56,7 +56,7 @@ export class AsaasService {
       }),
     }).then((res) => res.json());
 
-    return response.data;
+    return response;
   }
 
   private async imageToBase64(url: string) {
