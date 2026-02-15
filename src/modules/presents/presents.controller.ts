@@ -124,15 +124,15 @@ export class PresentsController {
     // }
 
     // return { received: true };
-    // console.log('Webhook recebido:', body);
-    console.log('WEBHOOK COMPLETO:', JSON.stringify(body, null, 2));
-    console.log('#### Webhook DATA:', body?.data);
 
-    const paymentId = body?.data?.id;
+    // console.log('WEBHOOK COMPLETO:', JSON.stringify(body, null, 2));
+    // console.log('#### Webhook DATA:', body?.data);
 
-    if (!paymentId) {
-      return { received: true };
-    }
+    // const paymentId = body?.data?.id;
+
+    // if (!paymentId) {
+    //   return { received: true };
+    // }
 
     // const { data: payment } = await axios.get(
     //   `https://api.mercadopago.com/v1/payments/${paymentId}`,
@@ -155,12 +155,11 @@ export class PresentsController {
 
     if (payment.status === 'approved') {
       const presentId = payment.metadata?.present_id;
+      console.log('entrou aqui????', presentId);
 
-      await this.presentModel.findByIdAndUpdate(
-        presentId,
-        { purchased: false },
-        { purchased: true },
-      );
+      await this.presentModel.findByIdAndUpdate(presentId, {
+        purchased: true,
+      });
     }
 
     return { received: true };
