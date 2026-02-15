@@ -124,7 +124,8 @@ export class PresentsController {
     // }
 
     // return { received: true };
-    console.log('Webhook recebido:', body);
+    // console.log('Webhook recebido:', body);
+    console.log('#### Webhook DATA:', body?.data);
 
     const paymentId = body?.data?.id;
 
@@ -140,6 +141,8 @@ export class PresentsController {
         },
       },
     );
+
+    console.log('######### Webhook PAYMENT:', payment);
 
     if (payment.status === 'approved') {
       const presentId = payment.metadata?.presentId;
