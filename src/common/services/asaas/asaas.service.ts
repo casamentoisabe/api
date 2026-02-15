@@ -40,7 +40,7 @@ export class AsaasService {
         },
         items: [
           {
-            imageBase64: present.photo,
+            imageBase64: this.imageToBase64(present.photo),
             name: present.name,
             quantity: 1,
             value: present.price,
@@ -53,5 +53,11 @@ export class AsaasService {
     );
 
     return response.data;
+  }
+
+  private async imageToBase64(url: string) {
+    const response = await axios.get(url, { responseType: 'arraybuffer' });
+
+    return `data:image/jpeg;base64,${Buffer.from(response.data).toString('base64')}`;
   }
 }
