@@ -154,12 +154,13 @@ export class PresentsController {
     console.log('######### Webhook PAYMENT:', payment);
 
     if (payment.status === 'approved') {
-      const presentId = payment.metadata?.presentId;
+      const presentId = payment.metadata?.present_id;
 
-      await this.presentModel.findByIdAndUpdate(presentId, {
-        purchased: true,
-        reserved: false,
-      });
+      await this.presentModel.findByIdAndUpdate(
+        presentId,
+        { purchased: false },
+        { purchased: true },
+      );
     }
 
     return { received: true };
