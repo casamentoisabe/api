@@ -17,6 +17,7 @@ import { Present, PresentDocument } from './schemas/presents.schema';
 import { Model } from 'mongoose';
 import express from 'express';
 import { CreatePresentDto } from './dto/create-present.dto';
+import axios from 'axios';
 
 @Controller('presents')
 export class PresentsController {
@@ -100,26 +101,53 @@ export class PresentsController {
   @Post('webhook/v3')
   @HttpCode(200)
   async handleWebhookV3(@Body() body: any) {
-    if (body.type === 'payment') {
-      const paymentId = body.data.id;
+    // if (body.type === 'payment') {
+    //   const paymentId = body.data.id;
 
-      // Buscar pagamento
-      const payment = await fetch(
-        `https://api.mercadopago.com/v1/payments/${paymentId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.MP_SECRET_KEY!}`,
-          },
+    //   // Buscar pagamento
+    //   const payment = await fetch(
+    //     `https://api.mercadopago.com/v1/payments/${paymentId}`,
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN!}`,
+    //       },
+    //     },
+    //   ).then((res) => res.json());
+
+    //   if (payment.status === 'approved') {
+    //     const presentId = payment.metadata.presentId;
+
+    //     await this.presentModel.findByIdAndUpdate(presentId, {
+    //       purchased: true,
+    //     });
+    //   }
+    // }
+
+    // return { received: true };
+    console.log('Webhook recebido:', body);
+
+    const paymentId = body?.data?.id;
+
+    if (!paymentId) {
+      return { received: true };
+    }
+
+    const { data: payment } = await axios.get(
+      `https://api.mercadopago.com/v1/payments/${paymentId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
         },
-      ).then((res) => res.json());
+      },
+    );
 
-      if (payment.status === 'approved') {
-        const presentId = payment.metadata.presentId;
+    if (payment.status === 'approved') {
+      const presentId = payment.metadata?.presentId;
 
-        await this.presentModel.findByIdAndUpdate(presentId, {
-          purchased: true,
-        });
-      }
+      await this.presentModel.findByIdAndUpdate(presentId, {
+        purchased: true,
+        reserved: false,
+      });
     }
 
     return { received: true };

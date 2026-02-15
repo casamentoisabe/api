@@ -7,7 +7,7 @@ export class MercadoPagoService {
 
   constructor() {
     this.client = new MercadoPagoConfig({
-      accessToken: process.env.MP_SECRET_KEY!,
+      accessToken: process.env.MP_ACCESS_TOKEN!,
     });
   }
 
