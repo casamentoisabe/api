@@ -128,7 +128,7 @@ export class PresentsController {
     // console.log('WEBHOOK COMPLETO:', JSON.stringify(body, null, 2));
     // console.log('#### Webhook DATA:', body?.data);
 
-    // const paymentId = body?.data?.id;
+    const paymentId = body?.data?.id;
 
     // if (!paymentId) {
     //   return { received: true };
