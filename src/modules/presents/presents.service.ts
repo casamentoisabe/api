@@ -86,24 +86,13 @@ export class PresentsService {
   // ---------------------------- API MERCADO PAGO ---------------------------- //
 
   public async createCheckoutV3(presentId: string) {
-    const updated = await this.presentModel.findOneAndUpdate(
-      {
-        _id: presentId,
-        purchased: false,
-        reserved: { $ne: true }, // evita dupla reserva
-      },
-      {
-        reserved: true,
-        reservedAt: new Date(),
-      },
-      { new: true },
-    );
+    const present = await this.presentModel.findById(presentId);
 
-    if (!updated) {
-      throw new Error('Presente já reservado ou comprado');
+    if (!present || present.purchased) {
+      throw new Error('Presente indisponível');
     }
 
-    const preference = await this.mercadoPagoService.createPreference(updated);
+    const preference = await this.mercadoPagoService.createPreference(present);
 
     return {
       url: preference.init_point,
