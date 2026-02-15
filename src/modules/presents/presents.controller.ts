@@ -47,13 +47,13 @@ export class PresentsController {
 
   // ---------------------------- API STRIPE ---------------------------- //
 
-  @Post(':id/checkout')
+  @Post(':id/checkout/v1')
   public async checkout(@Param('id') id: string) {
     const session = await this.presentsService.createCheckout(id);
     return { url: session.url };
   }
 
-  @Post('webhook')
+  @Post('webhook/v1')
   async handleWebhook(
     @Req() req: express.Request,
     @Headers('stripe-signature') signature: string,
