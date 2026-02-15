@@ -11,7 +11,7 @@ export class MercadoPagoService {
     });
   }
 
-  async createPreference(present: any) {
+  public async createPreference(present: any) {
     const preference = new Preference(this.client);
 
     const response = await preference.create({
