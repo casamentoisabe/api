@@ -44,6 +44,8 @@ export class PresentsController {
     return this.presentsService.findOne(id);
   }
 
+  // ---------------------------- API STRIPE ---------------------------- //
+
   @Post(':id/checkout')
   public async checkout(@Param('id') id: string) {
     const session = await this.presentsService.createCheckout(id);
@@ -85,6 +87,41 @@ export class PresentsController {
     }
 
     // Retorne uma resposta para dizer que o webhook foi recebido
+    return { received: true };
+  }
+
+  // ---------------------------- API MERCADO PAGO ---------------------------- //
+
+  @Post(':id/checkout/v3')
+  async checkoutV3(@Param('id') id: string) {
+    return this.presentsService.createCheckoutV3(id);
+  }
+
+  @Post('webhook/v3')
+  @HttpCode(200)
+  async handleWebhookV3(@Body() body: any) {
+    if (body.type === 'payment') {
+      const paymentId = body.data.id;
+
+      // Buscar pagamento
+      const payment = await fetch(
+        `https://api.mercadopago.com/v1/payments/${paymentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.MP_SECRET_KEY!}`,
+          },
+        },
+      ).then((res) => res.json());
+
+      if (payment.status === 'approved') {
+        const presentId = payment.metadata.presentId;
+
+        await this.presentModel.findByIdAndUpdate(presentId, {
+          purchased: true,
+        });
+      }
+    }
+
     return { received: true };
   }
 }

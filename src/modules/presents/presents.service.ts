@@ -10,6 +10,7 @@ import { Model } from 'mongoose';
 import { StripeService } from 'src/common/services/stripe/stripe.service';
 import { CreatePresentDto } from './dto/create-present.dto';
 import { AsaasService } from 'src/common/services/asaas/asaas.service';
+import { MercadoPagoService } from 'src/common/services/mercado-pago/mercado-pago.service';
 
 @Injectable()
 export class PresentsService {
@@ -17,6 +18,7 @@ export class PresentsService {
     @InjectModel(Present.name) private presentModel: Model<PresentDocument>,
     private stripeService: StripeService,
     private asaasService: AsaasService,
+    private mercadoPagoService: MercadoPagoService,
   ) {}
 
   public async create(
@@ -57,6 +59,8 @@ export class PresentsService {
     }
   }
 
+  // ---------------------------- API STRIPE ---------------------------- //
+
   public async createCheckout(presentId: string) {
     const present = await this.presentModel.findById(presentId);
 
@@ -76,6 +80,22 @@ export class PresentsService {
 
     return {
       invoiceUrl: payment.invoiceUrl,
+    };
+  }
+
+  // ---------------------------- API MERCADO PAGO ---------------------------- //
+
+  public async createCheckoutV3(presentId: string) {
+    const present = await this.presentModel.findById(presentId);
+
+    if (!present || present.purchased) {
+      throw new Error('Presente indisponível');
+    }
+
+    const preference = await this.mercadoPagoService.createPreference(present);
+
+    return {
+      url: preference.init_point,
     };
   }
 }

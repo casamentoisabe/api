@@ -9,6 +9,7 @@ import { MessagesModule } from './modules/messages/messages.module';
 import { StripeService } from './common/services/stripe/stripe.service';
 import { PresentsModule } from './modules/presents/presents.module';
 import { AsaasService } from './common/services/asaas/asaas.service';
+import { MercadoPagoService } from './common/services/mercado-pago/mercado-pago.service';
 import * as env from 'dotenv';
 
 env.config();
@@ -25,6 +26,6 @@ env.config();
     PresentsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, StripeService, AsaasService],
+  providers: [AppService, StripeService, AsaasService, MercadoPagoService],
 })
 export class AppModule {}
