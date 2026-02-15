@@ -79,7 +79,7 @@ export class PresentsService {
     const payment = await this.asaasService.createPayment(present);
 
     return {
-      invoiceUrl: payment.invoiceUrl,
+      url: payment.link,
     };
   }
 
