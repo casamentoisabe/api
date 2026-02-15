@@ -79,6 +79,8 @@ export class AsaasService {
       }),
     }).then((res) => res.json());
 
+    console.log('AQUI É O CREATE PAYMENT', response);
+
     return response.data;
   }
 

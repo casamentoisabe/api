@@ -87,7 +87,6 @@ export class PresentsController {
       console.log('TESTE', body);
     }
 
-    // Retorne uma resposta para dizer que o webhook foi recebido
     return { received: true };
   }
 
@@ -101,47 +100,8 @@ export class PresentsController {
   @Post('webhook/v3')
   @HttpCode(200)
   async handleWebhookV3(@Body() body: any) {
-    // if (body.type === 'payment') {
-    //   const paymentId = body.data.id;
-
-    //   // Buscar pagamento
-    //   const payment = await fetch(
-    //     `https://api.mercadopago.com/v1/payments/${paymentId}`,
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN!}`,
-    //       },
-    //     },
-    //   ).then((res) => res.json());
-
-    //   if (payment.status === 'approved') {
-    //     const presentId = payment.metadata.presentId;
-
-    //     await this.presentModel.findByIdAndUpdate(presentId, {
-    //       purchased: true,
-    //     });
-    //   }
-    // }
-
-    // return { received: true };
-
-    // console.log('WEBHOOK COMPLETO:', JSON.stringify(body, null, 2));
-    // console.log('#### Webhook DATA:', body?.data);
-
     const paymentId = body?.data?.id;
 
-    // if (!paymentId) {
-    //   return { received: true };
-    // }
-
-    // const { data: payment } = await axios.get(
-    //   `https://api.mercadopago.com/v1/payments/${paymentId}`,
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
-    //     },
-    //   },
-    // );
     const payment = await fetch(
       `https://api.mercadopago.com/v1/payments/${paymentId}`,
       {
@@ -151,11 +111,8 @@ export class PresentsController {
       },
     ).then((res) => res.json());
 
-    console.log('######### Webhook PAYMENT:', payment);
-
     if (payment.status === 'approved') {
       const presentId = payment.metadata?.present_id;
-      console.log('entrou aqui????', presentId);
 
       await this.presentModel.findByIdAndUpdate(presentId, {
         purchased: true,
