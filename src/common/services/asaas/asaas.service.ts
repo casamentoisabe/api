@@ -29,29 +29,6 @@ export class AsaasService {
   }
 
   public async createPayment(present: any) {
-    // const response = await axios.post(
-    //   `${this.baseUrl}/checkouts`,
-    //   {
-    //     billingTypes: ['CREDIT_CARD', 'PIX'],
-    //     chargeTypes: ['DETACHED', 'INSTALLMENT'],
-    //     callback: {
-    //       successUrl: `${process.env.APP_URL}/presentes/sucesso?id=${present._id}`,
-    //       cancelUrl: `${process.env.APP_URL}/presentes`,
-    //     },
-    //     items: [
-    //       {
-    //         imageBase64: await this.imageToBase64(present.photo),
-    //         name: present.name,
-    //         quantity: 1,
-    //         value: present.price,
-    //         description: present.description,
-    //       },
-    //     ],
-    //     installment: { maxInstallmentCount: 12 },
-    //   },
-    //   { headers: this.headers },
-    // );
-
     const response = await fetch(`${this.baseUrl}/checkouts`, {
       method: 'POST',
       headers: {
@@ -78,8 +55,6 @@ export class AsaasService {
         installment: { maxInstallmentCount: 12 },
       }),
     }).then((res) => res.json());
-
-    console.log('AQUI É O CREATE PAYMENT', response);
 
     return response.data;
   }

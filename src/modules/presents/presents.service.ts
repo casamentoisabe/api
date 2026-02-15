@@ -78,10 +78,8 @@ export class PresentsService {
 
     const payment = await this.asaasService.createPayment(present);
 
-    console.log('AQUI É O CREATE CHECKOUT V2', payment);
-
     return {
-      invoiceUrl: payment.invoiceUrl,
+      invoiceUrl: payment.link,
     };
   }
 
