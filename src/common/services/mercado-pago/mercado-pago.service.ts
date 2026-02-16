@@ -19,6 +19,7 @@ export class MercadoPagoService {
         payment_methods: {
           installments: 12,
         },
+        statement_descriptor: 'Casamento Isa & Be',
         items: [
           {
             id: present._id.toString(),
