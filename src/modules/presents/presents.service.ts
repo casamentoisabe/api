@@ -92,10 +92,17 @@ export class PresentsService {
       throw new Error('Presente indisponível');
     }
 
-    const preference = await this.mercadoPagoService.createPreference(present);
+    try {
+      const preference =
+        await this.mercadoPagoService.createPreference(present);
 
-    return {
-      url: preference.init_point,
-    };
+      return {
+        url: preference.init_point,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Houve um erro com o sistema de pagamentos, tente novamente!',
+      );
+    }
   }
 }
